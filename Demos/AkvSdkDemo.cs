@@ -18,7 +18,7 @@ public static class AkvSdkDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("3) Azure Key Vault SDK - ManagedIdentityCredential + SecretClient");
+        Ux.Header("4) Azure Key Vault SDK - ManagedIdentityCredential + SecretClient");
 
         if (string.IsNullOrWhiteSpace(s.KeyVaultUrl) || string.IsNullOrWhiteSpace(s.SecretName))
         {

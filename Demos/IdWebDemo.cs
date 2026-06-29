@@ -13,28 +13,15 @@ namespace TokenBindingShowcase.Demos;
 /// </summary>
 public static class IdWebDemo
 {
+    private static IServiceProvider? _provider;
+
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("2) Microsoft Identity Web - IDownstreamApi, ProtocolScheme = MTLS_POP");
+        Ux.Header("3) Microsoft Identity Web - IDownstreamApi, ProtocolScheme = MTLS_POP");
 
         try
         {
-            TokenAcquirerFactory factory = TokenAcquirerFactory.GetDefaultInstance();
-            factory.Services.AddDownstreamApi("AzureKeyVault", options =>
-            {
-                options.BaseUrl = s.KeyVaultUrl;
-                options.RelativePath = $"secrets/{s.SecretName}?api-version=7.4";
-                options.Scopes = new[] { s.Scope };
-                options.RequestAppToken = true;
-                options.ProtocolScheme = "MTLS_POP";
-                options.AcquireTokenOptions.ManagedIdentity = new ManagedIdentityOptions
-                {
-                    UserAssignedClientId = s.IsUserAssigned ? s.UserAssignedClientId : null
-                };
-            });
-
-            IServiceProvider serviceProvider = factory.Build();
-            IDownstreamApi api = serviceProvider.GetRequiredService<IDownstreamApi>();
+            IDownstreamApi api = GetProvider(s).GetRequiredService<IDownstreamApi>();
 
             Ux.Info("IDownstreamApi.CallApiForAppAsync(\"AzureKeyVault\")  (config-driven MI + MTLS_POP)");
 
@@ -50,5 +37,29 @@ public static class IdWebDemo
         {
             Ux.Error("Identity Web downstream call failed (expected off a KeyGuard-enabled VM)", ex);
         }
+    }
+
+    // TokenAcquirerFactory.GetDefaultInstance() is a process singleton whose Build() may be
+    // called only once - so build the provider lazily and reuse it across menu iterations.
+    private static IServiceProvider GetProvider(AppSettings s)
+    {
+        if (_provider is not null)
+            return _provider;
+
+        TokenAcquirerFactory factory = TokenAcquirerFactory.GetDefaultInstance();
+        factory.Services.AddDownstreamApi("AzureKeyVault", options =>
+        {
+            options.BaseUrl = s.KeyVaultUrl;
+            options.RelativePath = $"secrets/{s.SecretName}?api-version=7.4";
+            options.Scopes = new[] { s.Scope };
+            options.RequestAppToken = true;
+            options.ProtocolScheme = "MTLS_POP";
+            options.AcquireTokenOptions.ManagedIdentity = new ManagedIdentityOptions
+            {
+                UserAssignedClientId = s.IsUserAssigned ? s.UserAssignedClientId : null
+            };
+        });
+        _provider = factory.Build();
+        return _provider;
     }
 }

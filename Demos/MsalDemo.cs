@@ -15,7 +15,7 @@ public static class MsalDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("1) MSAL .NET - Managed Identity, mTLS Proof-of-Possession");
+        Ux.Header("2) MSAL .NET - Managed Identity, mTLS Proof-of-Possession");
 
         ManagedIdentityId id = s.IsUserAssigned
             ? ManagedIdentityId.WithUserAssignedClientId(s.UserAssignedClientId)
