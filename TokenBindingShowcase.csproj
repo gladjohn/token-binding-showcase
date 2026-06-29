@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>TokenBindingShowcase</RootNamespace>
+    <AssemblyName>TokenBindingShowcase</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- MSAL .NET: bound (mTLS PoP) Managed Identity token + KeyGuard attestation -->
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.85.2" />
+    <PackageReference Include="Microsoft.Identity.Client.KeyAttestation" Version="4.85.2" />
+
+    <!-- Microsoft Identity Web: config-driven IDownstreamApi (ProtocolScheme = MTLS_POP) -->
+    <PackageReference Include="Microsoft.Identity.Web" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="4.11.0" />
+
+    <!-- Azure Key Vault SDK + Azure.Identity credential.
+         NOTE: token binding (mTLS PoP) for the AKV SDK is a PREVIEW feature; the
+         DisableMtlsProofOfPossession option and bound behavior require the preview
+         package feed (Azure.Core 1.60.0-alpha...). The public versions below compile
+         and run; on public packages the credential acquires a bearer token. -->
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Azure.Identity.Broker" Version="1.8.0-beta.1" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.12.0-beta.1" />
+
+    <!-- Configuration (appsettings.json) -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
