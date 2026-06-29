@@ -1,13 +1,16 @@
 # Token Binding Showcase (Managed Identity, mTLS PoP)
 
-A single .NET 8 console app that acquires a **token-bound (mTLS Proof-of-Possession)**
-Managed Identity token for **Azure Key Vault** three different ways:
+A single .NET 8 console app that acquires a Managed Identity token for **Azure Key Vault** -
+a classic **bearer** token, plus a **token-bound (mTLS Proof-of-Possession)** token three ways.
+The menu **loops** (stays open between calls) and prints the **full token** so you can copy it
+and replay it from another VM.
 
-| # | Path | How it binds |
-| - | ---- | ------------ |
-| 1 | **MSAL .NET** | `ManagedIdentityApplication` + `.WithMtlsProofOfPossession().WithAttestationSupport()`, then a manual mTLS Key Vault call with the binding certificate. |
-| 2 | **Microsoft Identity Web** | Config-driven `IDownstreamApi` with `"ProtocolScheme": "MTLS_POP"` - acquisition, binding cert, and the mTLS call are handled for you. |
-| 3 | **Azure Key Vault SDK** | `ManagedIdentityCredential` passed to `SecretClient`; binding is applied transparently on a supported host. |
+| # | Path | Token |
+| - | ---- | ----- |
+| 1 | **Classic MSI (v1)** | Plain **bearer** token from a single raw call to local IMDS - the "before": simple, but stealable / replayable. |
+| 2 | **MSAL .NET** | Bound **mtls_pop** token via `ManagedIdentityApplication` + `.WithMtlsProofOfPossession().WithAttestationSupport()`, then a manual mTLS Key Vault call. |
+| 3 | **Microsoft Identity Web** | Bound, config-driven `IDownstreamApi` (`"ProtocolScheme": "MTLS_POP"`) - acquisition, binding cert, and mTLS call handled for you. |
+| 4 | **Azure Key Vault SDK** | `ManagedIdentityCredential` passed to `SecretClient`; binding applied transparently on a supported host. |
 
 ## Download & run (prebuilt)
 
@@ -15,8 +18,8 @@ Grab **`TokenBindingShowcase.exe`** from the [Releases](../../releases) page, co
 Trusted Launch / Confidential VM, and run it - it's a **self-contained single file** (no .NET install needed):
 
 ```powershell
-.\TokenBindingShowcase.exe        # interactive menu
-.\TokenBindingShowcase.exe 4      # run all three paths
+.\TokenBindingShowcase.exe        # interactive menu (loops until you choose 0)
+.\TokenBindingShowcase.exe 5      # run the bound paths (MSAL + Identity Web + AKV SDK)
 ```
 
 ## Configure
@@ -38,11 +41,12 @@ variables, e.g. `TokenBinding__KeyVaultUrl=...`, `TokenBinding__UserAssignedClie
 ## Run
 
 ```powershell
-dotnet run                 # interactive menu
-dotnet run -- 1            # MSAL
-dotnet run -- 2            # Microsoft Identity Web
-dotnet run -- 3            # Azure Key Vault SDK
-dotnet run -- 4            # all three
+dotnet run                 # interactive menu (loops; 0 to exit)
+dotnet run -- 1            # Classic MSI - bearer token
+dotnet run -- 2            # MSAL - bound mtls_pop
+dotnet run -- 3            # Microsoft Identity Web
+dotnet run -- 4            # Azure Key Vault SDK
+dotnet run -- 5            # all bound paths (2-4)
 ```
 
 ## Where it actually works

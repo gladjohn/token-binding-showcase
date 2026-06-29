@@ -21,11 +21,13 @@ public static class Ux
 
     public static void Menu()
     {
-        Console.WriteLine("Choose a token-acquisition path:");
-        Console.WriteLine("  1) MSAL .NET              (ManagedIdentityApplication + WithMtlsProofOfPossession + WithAttestationSupport)");
-        Console.WriteLine("  2) Microsoft Identity Web (IDownstreamApi, ProtocolScheme = MTLS_POP)");
-        Console.WriteLine("  3) Azure Key Vault SDK    (ManagedIdentityCredential + SecretClient)");
-        Console.WriteLine("  4) Run all three");
+        Console.WriteLine("Choose a path:");
+        Console.WriteLine("  1) Classic MSI (v1)        basic BEARER token via local IMDS  (stealable / replayable)");
+        Console.WriteLine("  2) MSAL .NET               BOUND mtls_pop token (+ binding cert)");
+        Console.WriteLine("  3) Microsoft Identity Web  bound, config-driven (ProtocolScheme = MTLS_POP)");
+        Console.WriteLine("  4) Azure Key Vault SDK     ManagedIdentityCredential + SecretClient");
+        Console.WriteLine("  5) Run the bound paths (2, 3, 4)");
+        Console.WriteLine("  0) Exit");
         Console.Write("> ");
     }
 
@@ -46,20 +48,30 @@ public static class Ux
         Line(ConsoleColor.Red, "         " + ex.Message);
     }
 
-    /// <summary>Prints the key facts of an acquired token (type, expiry, binding cert).</summary>
+    /// <summary>Prints the key facts of an acquired token, then the full token for replay.</summary>
     public static void PrintToken(string tokenType, string accessToken, DateTimeOffset expiresOn, X509Certificate2? bindingCert)
     {
         Ok($"Token acquired. token_type = {tokenType}");
         Info($"expires_on   = {expiresOn:u}");
-        Info($"access_token = {Truncate(accessToken)}");
         if (bindingCert is not null)
             Info($"binding cert = {bindingCert.Thumbprint}  (subject {bindingCert.Subject})");
         else
-            Warn("No binding certificate on the result -> bearer token (or host without KeyGuard).");
+            Warn("No binding certificate -> bearer token (or host without KeyGuard).");
+        PrintFullToken(tokenType, accessToken);
     }
 
-    private static string Truncate(string s) =>
-        string.IsNullOrEmpty(s) ? "(none)" : (s.Length <= 24 ? s : s[..12] + "..." + s[^6..]);
+    /// <summary>
+    /// Prints the FULL access token on its own line so it can be copied and replayed
+    /// from another machine (the bearer-vs-bound theft/replay demo).
+    /// </summary>
+    public static void PrintFullToken(string tokenType, string accessToken)
+    {
+        Console.WriteLine();
+        Line(ConsoleColor.DarkGray, $"  ===== ACCESS TOKEN  (scheme: {tokenType})  -- copy to replay on another VM =====");
+        Console.WriteLine(string.IsNullOrEmpty(accessToken) ? "(none)" : accessToken);
+        Line(ConsoleColor.DarkGray,  "  ============================================================================");
+        Console.WriteLine();
+    }
 
     private static string Or(string value, string fallback) =>
         string.IsNullOrWhiteSpace(value) ? fallback : value;
