@@ -1,16 +1,17 @@
 # Token Binding Showcase (Managed Identity, mTLS PoP)
 
-A single .NET 8 console app that acquires a Managed Identity token for **Azure Key Vault** -
-a classic **bearer** token, plus a **token-bound (mTLS Proof-of-Possession)** token three ways.
-The menu **loops** (stays open between calls) and prints the **full token** so you can copy it
-and replay it from another VM.
+A single .NET 8 console app that shows the **KeyGuard key** behind token binding, then acquires a
+Managed Identity token for **Azure Key Vault** - a classic **bearer** token, plus a
+**token-bound (mTLS Proof-of-Possession)** token three ways. The menu **loops** (stays open between
+calls) and prints the **full token** so you can copy it and replay it from another VM.
 
-| # | Path | Token |
-| - | ---- | ----- |
-| 1 | **Classic MSI (v1)** | Plain **bearer** token from a single raw call to local IMDS - the "before": simple, but stealable / replayable. |
-| 2 | **MSAL .NET** | Bound **mtls_pop** token via `ManagedIdentityApplication` + `.WithMtlsProofOfPossession().WithAttestationSupport()`, then a manual mTLS Key Vault call. |
-| 3 | **Microsoft Identity Web** | Bound, config-driven `IDownstreamApi` (`"ProtocolScheme": "MTLS_POP"`) - acquisition, binding cert, and mTLS call handled for you. |
-| 4 | **Azure Key Vault SDK** | `ManagedIdentityCredential` passed to `SecretClient`; binding applied transparently on a supported host. |
+| # | Path | What it shows |
+| - | ---- | ------------- |
+| 1 | **KeyGuard key demo** | Creates a VBS-isolated CNG key (`DemoKeyGuardKey`), lists it, and proves the private key **cannot be exported**. The hardware-protected key a bound token ties to. |
+| 2 | **Classic MSI (v1)** | Plain **bearer** token from a single raw call to local IMDS - the "before": simple, but stealable / replayable. |
+| 3 | **MSAL .NET** | Bound **mtls_pop** token via `ManagedIdentityApplication` + `.WithMtlsProofOfPossession().WithAttestationSupport()`, then a manual mTLS Key Vault call. |
+| 4 | **Microsoft Identity Web** | Bound, config-driven `IDownstreamApi` (`"ProtocolScheme": "MTLS_POP"`) - acquisition, binding cert, and mTLS call handled for you. |
+| 5 | **Azure Key Vault SDK** | `ManagedIdentityCredential` passed to `SecretClient`; binding applied transparently on a supported host. |
 
 ## Download & run (prebuilt)
 
@@ -19,7 +20,7 @@ Trusted Launch / Confidential VM, and run it - it's a **self-contained single fi
 
 ```powershell
 .\TokenBindingShowcase.exe        # interactive menu (loops until you choose 0)
-.\TokenBindingShowcase.exe 5      # run the bound paths (MSAL + Identity Web + AKV SDK)
+.\TokenBindingShowcase.exe 6      # run the bound paths (MSAL + Identity Web + AKV SDK)
 ```
 
 ## Configure
@@ -42,11 +43,12 @@ variables, e.g. `TokenBinding__KeyVaultUrl=...`, `TokenBinding__UserAssignedClie
 
 ```powershell
 dotnet run                 # interactive menu (loops; 0 to exit)
-dotnet run -- 1            # Classic MSI - bearer token
-dotnet run -- 2            # MSAL - bound mtls_pop
-dotnet run -- 3            # Microsoft Identity Web
-dotnet run -- 4            # Azure Key Vault SDK
-dotnet run -- 5            # all bound paths (2-4)
+dotnet run -- 1            # KeyGuard key demo (create / list / export-fails)
+dotnet run -- 2            # Classic MSI - bearer token
+dotnet run -- 3            # MSAL - bound mtls_pop
+dotnet run -- 4            # Microsoft Identity Web
+dotnet run -- 5            # Azure Key Vault SDK
+dotnet run -- 6            # all bound paths (3-5)
 ```
 
 ## Where it actually works

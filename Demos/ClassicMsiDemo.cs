@@ -11,7 +11,7 @@ public static class ClassicMsiDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Section("[1]  Classic Managed Identity (v1)  --  basic BEARER token");
+        Ux.Section("[2]  Classic Managed Identity (v1)  --  basic BEARER token");
         Ux.Context(
             "The 'before' picture: one local call to the IMDS endpoint returns an access token.",
             "No key, no certificate, no attestation -- just a plain BEARER token.",

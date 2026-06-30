@@ -36,11 +36,12 @@ public static class Ux
         Console.WriteLine();
         Line(ConsoleColor.DarkCyan, "  " + new string('-', Width - 2));
         Line(ConsoleColor.White,    "  Choose a path:");
-        MenuItem("1", "Classic MSI (v1)", "basic BEARER token via local IMDS  (stealable)", ConsoleColor.DarkYellow);
-        MenuItem("2", "MSAL .NET", "BOUND mtls_pop token (+ binding certificate)", ConsoleColor.Green);
-        MenuItem("3", "Microsoft Identity Web", "bound, config-driven (ProtocolScheme = MTLS_POP)", ConsoleColor.Green);
-        MenuItem("4", "Azure Key Vault SDK", "ManagedIdentityCredential + SecretClient", ConsoleColor.Green);
-        MenuItem("5", "Run the bound paths", "2, 3 and 4 in sequence", ConsoleColor.Green);
+        MenuItem("1", "KeyGuard key demo", "create + list + export-fails (VBS-isolated key)", ConsoleColor.Magenta);
+        MenuItem("2", "Classic MSI (v1)", "basic BEARER token via local IMDS  (stealable)", ConsoleColor.DarkYellow);
+        MenuItem("3", "MSAL .NET", "BOUND mtls_pop token (+ binding certificate)", ConsoleColor.Green);
+        MenuItem("4", "Microsoft Identity Web", "bound, config-driven (ProtocolScheme = MTLS_POP)", ConsoleColor.Green);
+        MenuItem("5", "Azure Key Vault SDK", "ManagedIdentityCredential + SecretClient", ConsoleColor.Green);
+        MenuItem("6", "Run the bound paths", "3, 4 and 5 in sequence", ConsoleColor.Green);
         MenuItem("0", "Exit", "", ConsoleColor.Gray);
         Line(ConsoleColor.DarkCyan, "  " + new string('-', Width - 2));
         Console.Write("  > ");
