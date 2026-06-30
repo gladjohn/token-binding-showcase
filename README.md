@@ -4,7 +4,8 @@ A single .NET 8 console app that shows the **KeyGuard key** behind token binding
 key isn't enough), then acquires a Managed Identity token for **Azure Key Vault** - a classic
 **bearer** token, plus a **token-bound (mTLS Proof-of-Possession)** token three ways. The menu
 **loops** (stays open between calls) and prints the **full token** so you can copy it and replay it
-from another VM.
+from another VM. Option **9** is the attacker side - paste a stolen token and it calls Key Vault as a
+bearer (a plain bearer is accepted; a bound token is rejected).
 
 | # | Path | What it shows |
 | - | ---- | ------------- |
@@ -54,6 +55,7 @@ dotnet run -- 5            # MSAL - bound mtls_pop
 dotnet run -- 6            # Microsoft Identity Web
 dotnet run -- 7            # Azure Key Vault SDK
 dotnet run -- 8            # all bound paths (5-7)
+dotnet run -- 9            # Replay a stolen token (attacker) - paste + call Key Vault
 ```
 
 ## Where it actually works

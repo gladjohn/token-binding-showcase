@@ -44,6 +44,7 @@ public static class Ux
         MenuItem("6", "Microsoft Identity Web", "bound, config-driven (ProtocolScheme = MTLS_POP)", ConsoleColor.Green);
         MenuItem("7", "Azure Key Vault SDK", "ManagedIdentityCredential + SecretClient", ConsoleColor.Green);
         MenuItem("8", "Run the bound paths", "5, 6 and 7 in sequence", ConsoleColor.Green);
+        MenuItem("9", "Replay a stolen token", "ATTACKER: paste a token, call Key Vault (200=exfiltrated, 401=blocked)", ConsoleColor.Red);
         MenuItem("0", "Exit", "", ConsoleColor.Gray);
         Line(ConsoleColor.DarkCyan, "  " + new string('-', Width - 2));
         Console.Write("  > ");

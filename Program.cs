@@ -47,8 +47,9 @@ async Task Run(string choice)
             await IdWebDemo.RunAsync(settings);
             await AkvSdkDemo.RunAsync(settings);
             break;
+        case "9": await ReplayDemo.RunAsync(settings); break;
         default:
-            Ux.Warn($"Unknown option '{choice}'. Choose 0-8.");
+            Ux.Warn($"Unknown option '{choice}'. Choose 0-9.");
             break;
     }
 }
