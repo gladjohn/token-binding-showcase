@@ -15,7 +15,7 @@ public static class MsalDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Section("[3]  MSAL .NET  --  BOUND token (mTLS Proof-of-Possession)");
+        Ux.Section("[5]  MSAL .NET  --  BOUND token (mTLS Proof-of-Possession)");
         Ux.Context(
             "MSAL acquires a token cryptographically BOUND to a key it controls.",
             "Flow: IMDSv2 getPlatformMetadata -> KeyGuard key + CSR -> MAA attestation",

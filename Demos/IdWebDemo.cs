@@ -17,7 +17,7 @@ public static class IdWebDemo
 
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Section("[4]  Microsoft Identity Web  --  bound, config-driven");
+        Ux.Section("[6]  Microsoft Identity Web  --  bound, config-driven");
         Ux.Context(
             "Same binding as MSAL, but driven by configuration -- no mTLS plumbing in your code.",
             "ProtocolScheme = MTLS_POP tells IDownstreamApi to acquire the bound token, attach the",

@@ -18,7 +18,7 @@ public static class AkvSdkDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Section("[5]  Azure Key Vault SDK  --  ManagedIdentityCredential");
+        Ux.Section("[7]  Azure Key Vault SDK  --  ManagedIdentityCredential");
         Ux.Context(
             "Token binding applied transparently: pass a ManagedIdentityCredential to SecretClient",
             "and the Key Vault SDK acquires a bound token and calls over mTLS automatically.",

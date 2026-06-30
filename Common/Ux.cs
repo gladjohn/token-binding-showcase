@@ -36,12 +36,14 @@ public static class Ux
         Console.WriteLine();
         Line(ConsoleColor.DarkCyan, "  " + new string('-', Width - 2));
         Line(ConsoleColor.White,    "  Choose a path:");
-        MenuItem("1", "KeyGuard key demo", "create + list + export-fails (VBS-isolated key)", ConsoleColor.Magenta);
-        MenuItem("2", "Classic MSI (v1)", "basic BEARER token via local IMDS  (stealable)", ConsoleColor.DarkYellow);
-        MenuItem("3", "MSAL .NET", "BOUND mtls_pop token (+ binding certificate)", ConsoleColor.Green);
-        MenuItem("4", "Microsoft Identity Web", "bound, config-driven (ProtocolScheme = MTLS_POP)", ConsoleColor.Green);
-        MenuItem("5", "Azure Key Vault SDK", "ManagedIdentityCredential + SecretClient", ConsoleColor.Green);
-        MenuItem("6", "Run the bound paths", "3, 4 and 5 in sequence", ConsoleColor.Green);
+        MenuItem("1", "KeyGuard key", "create + list + export-FAILS (VBS-isolated)", ConsoleColor.Magenta);
+        MenuItem("2", "Non-KeyGuard key", "create + list + export-SUCCEEDS (exportable!)", ConsoleColor.DarkYellow);
+        MenuItem("3", "Certs from both keys", "install in CurrentUser\\My (compare in certmgr)", ConsoleColor.Magenta);
+        MenuItem("4", "Classic MSI (v1)", "basic BEARER token via local IMDS  (stealable)", ConsoleColor.DarkYellow);
+        MenuItem("5", "MSAL .NET", "BOUND mtls_pop token (+ binding certificate)", ConsoleColor.Green);
+        MenuItem("6", "Microsoft Identity Web", "bound, config-driven (ProtocolScheme = MTLS_POP)", ConsoleColor.Green);
+        MenuItem("7", "Azure Key Vault SDK", "ManagedIdentityCredential + SecretClient", ConsoleColor.Green);
+        MenuItem("8", "Run the bound paths", "5, 6 and 7 in sequence", ConsoleColor.Green);
         MenuItem("0", "Exit", "", ConsoleColor.Gray);
         Line(ConsoleColor.DarkCyan, "  " + new string('-', Width - 2));
         Console.Write("  > ");
@@ -76,6 +78,7 @@ public static class Ux
     public static void Ok(string msg)   => Line(ConsoleColor.Green,      "    [ OK ]  " + msg);
     public static void Info(string msg) => Line(ConsoleColor.Gray,       "    .       " + msg);
     public static void Warn(string msg) => Line(ConsoleColor.DarkYellow, "    [ !  ]  " + msg);
+    public static void Danger(string msg) => Line(ConsoleColor.Red, "    [BAD ]  " + msg);
 
     public static void Error(string msg, Exception ex)
     {

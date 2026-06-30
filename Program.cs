@@ -36,17 +36,19 @@ async Task Run(string choice)
     switch (choice)
     {
         case "1": await KeyGuardDemo.RunAsync(settings); break;
-        case "2": await ClassicMsiDemo.RunAsync(settings); break;
-        case "3": await MsalDemo.RunAsync(settings); break;
-        case "4": await IdWebDemo.RunAsync(settings); break;
-        case "5": await AkvSdkDemo.RunAsync(settings); break;
-        case "6":
+        case "2": await SoftwareKeyDemo.RunAsync(settings); break;
+        case "3": await CertDemo.RunAsync(settings); break;
+        case "4": await ClassicMsiDemo.RunAsync(settings); break;
+        case "5": await MsalDemo.RunAsync(settings); break;
+        case "6": await IdWebDemo.RunAsync(settings); break;
+        case "7": await AkvSdkDemo.RunAsync(settings); break;
+        case "8":
             await MsalDemo.RunAsync(settings);
             await IdWebDemo.RunAsync(settings);
             await AkvSdkDemo.RunAsync(settings);
             break;
         default:
-            Ux.Warn($"Unknown option '{choice}'. Choose 0-6.");
+            Ux.Warn($"Unknown option '{choice}'. Choose 0-8.");
             break;
     }
 }
