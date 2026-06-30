@@ -58,6 +58,9 @@ public static class IdWebDemo
             {
                 UserAssignedClientId = s.IsUserAssigned ? s.UserAssignedClientId : null
             };
+            // Key Vault opt-in header for token-bound auth (the MSAL path sets this too).
+            options.CustomizeHttpRequestMessage = request =>
+                request.Headers.TryAddWithoutValidation("x-ms-tokenboundauth", "true");
         });
         _provider = factory.Build();
         return _provider;
