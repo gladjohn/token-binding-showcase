@@ -8,8 +8,8 @@ namespace TokenBindingShowcase;
 /// </summary>
 public sealed class AppSettings
 {
-    public string KeyVaultUrl { get; set; } = "https://msidlabs.vault.azure.net/";
-    public string SecretName { get; set; } = "mytbsecret";
+    public string KeyVaultUrl { get; set; } = "https://tokenbindingdemo.vault.azure.net/";
+    public string SecretName { get; set; } = "tbsecret";
     public string UserAssignedClientId { get; set; } = "71d22d68-0415-4801-9a68-f3916c8968d0";
     public string Resource { get; set; } = "https://vault.azure.net";
     public string Scope { get; set; } = "https://vault.azure.net/.default";

@@ -34,8 +34,8 @@ Values are **pre-baked** (in `appsettings.json` and as defaults in `AppSettings.
 | ------- | ----- |
 | `UserAssignedClientId` | `71d22d68-0415-4801-9a68-f3916c8968d0` |
 | `AzureRegion` | `westcentralus` |
-| `KeyVaultUrl` | `https://msidlabs.vault.azure.net/` |
-| `SecretName` | `mytbsecret` |
+| `KeyVaultUrl` | `https://tokenbindingdemo.vault.azure.net/` |
+| `SecretName` | `tbsecret` |
 
 These are **non-secret identifiers** (a managed-identity client id only yields tokens on the VM it's
 assigned to). Override any of them by dropping an `appsettings.json` next to the exe, or via environment
