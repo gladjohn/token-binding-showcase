@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text.Json;
 using TokenBindingShowcase;
 
@@ -46,11 +47,41 @@ public static class ClassicMsiDemo
 
             Ux.Ok($"token_type = {type}   (UNBOUND -> replayable from any machine)");
             Ux.PrintFullToken(type, token);
+
+            if (s.CallKeyVault
+                && !string.IsNullOrEmpty(token)
+                && !string.IsNullOrWhiteSpace(s.KeyVaultUrl)
+                && !string.IsNullOrWhiteSpace(s.SecretName))
+            {
+                await CallKeyVaultWithBearerAsync(token, s);
+            }
+
             Ux.Takeaway("This token is UNBOUND -- copy it and it works from any machine. That is the risk token binding removes.");
         }
         catch (Exception ex)
         {
             Ux.Error("Classic IMDS call failed (run on an Azure VM that has a managed identity)", ex);
         }
+    }
+
+    // Calls Key Vault with the plain bearer token (no binding certificate on the channel).
+    private static async Task CallKeyVaultWithBearerAsync(string bearerToken, AppSettings s)
+    {
+        string url = $"{s.KeyVaultUrl.TrimEnd('/')}/secrets/{s.SecretName}?api-version=7.4";
+        Ux.Info($"Now calling Key Vault with this plain bearer token (no binding cert): GET {url}");
+
+        using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+
+        using HttpResponseMessage resp = await http.GetAsync(url);
+        int code = (int)resp.StatusCode;
+        Ux.Info($"Key Vault responded: {code} {resp.StatusCode}");
+
+        if (resp.IsSuccessStatusCode)
+            Ux.Danger("Secret READ with a plain bearer token - no binding enforced (this is the exposure).");
+        else if (code == 401)
+            Ux.Ok("401 - the vault enforces token binding; a plain bearer token is rejected.");
+        else if (code == 403)
+            Ux.Warn("403 - auth OK, but this identity lacks RBAC on the secret.");
     }
 }
