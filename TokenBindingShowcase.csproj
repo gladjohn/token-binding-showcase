@@ -8,6 +8,8 @@
     <RootNamespace>TokenBindingShowcase</RootNamespace>
     <AssemblyName>TokenBindingShowcase</AssemblyName>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Azure.Identity token-binding APIs are marked [Experimental]; allow their use. -->
+    <NoWarn>$(NoWarn);AZID0004</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,12 +21,14 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="4.11.0" />
     <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="4.11.0" />
 
-    <!-- Azure Key Vault SDK + Azure.Identity credential.
-         NOTE: token binding (mTLS PoP) for the AKV SDK is a PREVIEW feature; the
-         DisableMtlsProofOfPossession option and bound behavior require the preview
-         package feed (Azure.Core 1.60.0-alpha...). The public versions below compile
-         and run; on public packages the credential acquires a bearer token. -->
-    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <!-- Azure Key Vault SDK + Azure.Identity WITH token binding (mTLS PoP).
+         Restored from the azure-sdk public dev feed (see NuGet.config): Azure.Core
+         1.60.0-alpha provides the bound-token pipeline and the preview Azure.Identity
+         (pulled via Identity.Broker) exposes it. Binding is ON by default on a
+         supported (KeyGuard) host. -->
+    <PackageReference Include="Azure.Core" Version="1.60.0-alpha.20260622.10">
+      <Aliases>azcore</Aliases>
+    </PackageReference>
     <PackageReference Include="Azure.Identity.Broker" Version="1.8.0-beta.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.12.0-beta.1" />
 

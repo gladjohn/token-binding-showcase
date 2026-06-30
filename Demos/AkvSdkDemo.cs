@@ -1,18 +1,15 @@
-using Azure;
-using Azure.Identity;
+extern alias azcore;
 using Azure.Security.KeyVault.Secrets;
 using TokenBindingShowcase;
+using MI = azcore::Azure.Identity;
 
 namespace TokenBindingShowcase.Demos;
 
 /// <summary>
-/// Path 3 - Azure Key Vault SDK. A ManagedIdentityCredential is passed to a SecretClient;
-/// on a supported host token binding is applied transparently and the AKV call goes over mTLS.
-///
-/// NOTE: token binding (mTLS PoP) for the AKV SDK is a PREVIEW feature. The opt-out
-/// (DisableMtlsProofOfPossession) and the bound behavior require the preview package feed
-/// (Azure.Core 1.60.0-alpha...). With the public packages referenced here the call still
-/// works, but the credential acquires a bearer token rather than a bound one.
+/// Path (menu 7) - Azure Key Vault SDK. A ManagedIdentityCredential from the binding-enabled
+/// Azure.Core 1.60.0-alpha (aliased 'azcore' to avoid the type clash with the transitive
+/// Azure.Identity that Microsoft.Identity.Web pulls in) is passed to SecretClient; on a
+/// supported (KeyGuard) host token binding (mTLS PoP) is ON by default and applied transparently.
 /// </summary>
 public static class AkvSdkDemo
 {
@@ -30,14 +27,14 @@ public static class AkvSdkDemo
             return;
         }
 
-        ManagedIdentityId id = s.IsUserAssigned
-            ? ManagedIdentityId.FromUserAssignedClientId(s.UserAssignedClientId)
-            : ManagedIdentityId.SystemAssigned;
+        MI.ManagedIdentityId id = s.IsUserAssigned
+            ? MI.ManagedIdentityId.FromUserAssignedClientId(s.UserAssignedClientId)
+            : MI.ManagedIdentityId.SystemAssigned;
 
-        var options = new ManagedIdentityCredentialOptions(id);
-        // Token binding is ON by default on a supported host. To opt out (preview feed only):
+        var options = new MI.ManagedIdentityCredentialOptions(id);
+        // Token binding is ON by default on a supported host. To opt out:
         //   options.DisableMtlsProofOfPossession = true;
-        var credential = new ManagedIdentityCredential(options);
+        var credential = new MI.ManagedIdentityCredential(options);
 
         var client = new SecretClient(new Uri(s.KeyVaultUrl), credential);
 
@@ -46,7 +43,7 @@ public static class AkvSdkDemo
 
         try
         {
-            Response<KeyVaultSecret> secret = await client.GetSecretAsync(s.SecretName);
+            var secret = await client.GetSecretAsync(s.SecretName);
             Ux.Ok($"Got secret '{secret.Value.Name}' (value length {secret.Value.Value?.Length ?? 0}).");
             Ux.Takeaway("The credential + client handled the bound mTLS call end-to-end -- zero plumbing.");
         }

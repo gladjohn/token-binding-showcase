@@ -74,7 +74,10 @@ paths are the point of this sample.
 - MSAL (`Microsoft.Identity.Client` + `Microsoft.Identity.Client.KeyAttestation`)
   and Microsoft Identity Web are referenced from public NuGet and fully exercise
   the bound flow on a supported host.
-- The **Azure Key Vault SDK** token-binding support is **preview**: the
-  `DisableMtlsProofOfPossession` option and the bound behavior require the preview
-  package feed (`Azure.Core 1.60.0-alpha...`). The public versions referenced here
-  compile and run; pin the preview feed for true binding via the Azure SDK.
+- The **Azure Key Vault SDK** token binding lives in **preview/alpha** packages restored
+  from the **azure-sdk public dev feed** (see `NuGet.config`): `Azure.Core 1.60.0-alpha`
+  provides the bound-token pipeline and the preview `Azure.Identity` (via
+  `Azure.Identity.Broker 1.8.0-beta.1`) exposes it. Those credential types ship in the
+  `Azure.Identity` namespace *inside* `Azure.Core` and clash with the `Azure.Identity` that
+  Identity Web pulls in, so the project binds to them through an `extern alias` (`azcore`).
+  The public `Azure.Identity` (1.21.0) has **no** PoP/mTLS API - it would acquire a plain bearer token.
