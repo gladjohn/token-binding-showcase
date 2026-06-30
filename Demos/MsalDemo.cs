@@ -15,7 +15,12 @@ public static class MsalDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("2) MSAL .NET - Managed Identity, mTLS Proof-of-Possession");
+        Ux.Section("[2]  MSAL .NET  --  BOUND token (mTLS Proof-of-Possession)");
+        Ux.Context(
+            "MSAL acquires a token cryptographically BOUND to a key it controls.",
+            "Flow: IMDSv2 getPlatformMetadata -> KeyGuard key + CSR -> MAA attestation",
+            "      -> /issuecredential (binding cert) -> ESTS over mTLS -> mtls_pop token.",
+            "The call below presents the cert on the TLS channel + the Key Vault opt-in header.");
 
         ManagedIdentityId id = s.IsUserAssigned
             ? ManagedIdentityId.WithUserAssignedClientId(s.UserAssignedClientId)
@@ -45,6 +50,8 @@ public static class MsalDemo
             {
                 await CallKeyVaultOverMtlsAsync(result, s);
             }
+
+            Ux.Takeaway("token_type = mtls_pop with a binding certificate. Replayed without that cert from another VM, this token is rejected (401).");
         }
         catch (Exception ex)
         {

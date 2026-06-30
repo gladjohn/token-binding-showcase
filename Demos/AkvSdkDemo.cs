@@ -18,7 +18,11 @@ public static class AkvSdkDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("4) Azure Key Vault SDK - ManagedIdentityCredential + SecretClient");
+        Ux.Section("[4]  Azure Key Vault SDK  --  ManagedIdentityCredential");
+        Ux.Context(
+            "Token binding applied transparently: pass a ManagedIdentityCredential to SecretClient",
+            "and the Key Vault SDK acquires a bound token and calls over mTLS automatically.",
+            "No certificate handling or headers to manage yourself.");
 
         if (string.IsNullOrWhiteSpace(s.KeyVaultUrl) || string.IsNullOrWhiteSpace(s.SecretName))
         {
@@ -44,6 +48,7 @@ public static class AkvSdkDemo
         {
             Response<KeyVaultSecret> secret = await client.GetSecretAsync(s.SecretName);
             Ux.Ok($"Got secret '{secret.Value.Name}' (value length {secret.Value.Value?.Length ?? 0}).");
+            Ux.Takeaway("The credential + client handled the bound mTLS call end-to-end -- zero plumbing.");
         }
         catch (Exception ex)
         {

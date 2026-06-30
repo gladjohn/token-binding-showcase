@@ -17,7 +17,11 @@ public static class IdWebDemo
 
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("3) Microsoft Identity Web - IDownstreamApi, ProtocolScheme = MTLS_POP");
+        Ux.Section("[3]  Microsoft Identity Web  --  bound, config-driven");
+        Ux.Context(
+            "Same binding as MSAL, but driven by configuration -- no mTLS plumbing in your code.",
+            "ProtocolScheme = MTLS_POP tells IDownstreamApi to acquire the bound token, attach the",
+            "binding certificate, add the Key Vault opt-in header, and make the call over mTLS.");
 
         try
         {
@@ -32,6 +36,8 @@ public static class IdWebDemo
                 Ux.Ok("Downstream Key Vault call succeeded (Identity Web did acquisition + mTLS).");
             else
                 Ux.Warn("403 = RBAC (assign 'Key Vault Secrets User'); 401 = auth/binding issue.");
+
+            Ux.Takeaway("Same bound result as MSAL -- but you only wrote configuration.");
         }
         catch (Exception ex)
         {

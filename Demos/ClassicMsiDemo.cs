@@ -11,7 +11,11 @@ public static class ClassicMsiDemo
 {
     public static async Task RunAsync(AppSettings s)
     {
-        Ux.Header("1) Classic MSI (v1) - basic BEARER token via local IMDS");
+        Ux.Section("[1]  Classic Managed Identity (v1)  --  basic BEARER token");
+        Ux.Context(
+            "The 'before' picture: one local call to the IMDS endpoint returns an access token.",
+            "No key, no certificate, no attestation -- just a plain BEARER token.",
+            "A bearer token is portable: whoever holds it can use it from anywhere.");
 
         string url = "http://169.254.169.254/metadata/identity/oauth2/token"
                    + "?api-version=2018-02-01&resource=" + Uri.EscapeDataString(s.Resource);
@@ -42,6 +46,7 @@ public static class ClassicMsiDemo
 
             Ux.Ok($"token_type = {type}   (UNBOUND -> replayable from any machine)");
             Ux.PrintFullToken(type, token);
+            Ux.Takeaway("This token is UNBOUND -- copy it and it works from any machine. That is the risk token binding removes.");
         }
         catch (Exception ex)
         {
